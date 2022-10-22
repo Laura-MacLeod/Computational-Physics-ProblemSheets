@@ -16,12 +16,12 @@ import matplotlib
 #%%------- Question 5 b) ------- INCOMPLETE
 
 
-T = [[1, 0.526, 0.257, 0, 0, 0],
+T = np.array([[1, 0.526, 0.257, 0, 0, 0],
      [0.526, 1, 0.64, 0, 0, 0],
      [0.257, 0.64, 1, 0, 0, 0],
      [0, 0, 0, -1, -0.581, -0.978],
      [0, 0, 0, -0.581, -1, -0.5],
-     [0, 0, 0, -0,978, -0.5, -1]]
+     [0, 0, 0, -0,978, -0.5, -1]])
 
 
 # Perform Gauss_Jordan elimination to find inverse T^-1
@@ -36,22 +36,25 @@ def Unit(n):
             
 unit = Unit(6)
 
-
+#augmat = 
 # def MatMult()
 
-out = np.matmul(T, M1)
+#out = np.matmul(T, M1)
 # print(out)
 
-
-
-
-
-thing = np.zeros((5, 5))
-thing[[0],[0]] = thing[[0],[0]] +1
+#thing = np.zeros((5, 5))
+#thing[[0],[0]] = thing[[0],[0]] +1
 # print(thing)
 
 
 
+def GaussJordan(M):
+    unit = Unit(len(M))
+    
+    
+
+print(pd.DataFrame(T))
+GaussJordan(T)
 
 
 Tinverse = np.array([[1.40, -0.86, 0.19, 0, 0, 0],
@@ -108,7 +111,7 @@ def Dot(m1, m2):
 
 # ---- Use I = T^-1 * B -----
 
-# zero_I = Dot(Tinverse, zero_B)
+zero_I = Dot(Tinverse, zero_B)
 
 
 # ----- Use B' = T' * I ------
