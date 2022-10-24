@@ -10,18 +10,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib
+import sys
 
 %matplotlib auto
 
-#%%------- Question 5 b) ------- INCOMPLETE
+np.set_printoptions(threshold=sys.maxsize)
+
+#%%------- Question 5 b) ------- 
 
 
-T = np.array([[1, 0.526, 0.257, 0, 0, 0],
+T = ([[1, 0.526, 0.257, 0, 0, 0],
      [0.526, 1, 0.64, 0, 0, 0],
      [0.257, 0.64, 1, 0, 0, 0],
      [0, 0, 0, -1, -0.581, -0.978],
      [0, 0, 0, -0.581, -1, -0.5],
-     [0, 0, 0, -0,978, -0.5, -1]])
+     [0, 0, 0, -0.978, -0.5, -1]])
 
 
 # Perform Gauss_Jordan elimination to find inverse T^-1
@@ -29,12 +32,12 @@ T = np.array([[1, 0.526, 0.257, 0, 0, 0],
 
 
 def Unit(n):
-    mat = np.zeros((n, n))
-    for i in range(n): 
-        mat[[i],[i]] = mat[[i],[i]] + 1
+    # mat = np.zeros((n, n))
+    # for i in range(n): 
+    #     mat[[i],[i]] = mat[[i],[i]] + 1
+    mat = np.diag(np.ones(6))
     return mat
             
-unit = Unit(6)
 
 #augmat = 
 # def MatMult()
@@ -46,36 +49,47 @@ unit = Unit(6)
 #thing[[0],[0]] = thing[[0],[0]] +1
 # print(thing)
 
+print(pd.DataFrame(T))
+print(Unit(6))
+
+aug = np.concatenate((T, Unit(6)), axis=1)
+print(pd.DataFrame(aug))
 
 
 def GaussJordan(M):
-    unit = Unit(len(M))
-    
-    
+    aug = np.concatenate((M, Unit(len(M))), axis=1)
+    for k in range(len(M)):
+        for i  in range(len(M)):
+            if k!=i:
+                ratio = aug[i][k] / aug[k][k]
+                for j in range(len(aug[0])):
+                    aug[i][j] -= (ratio * aug[k][j])
+        aug[k] = aug[k] / aug[k][k]
+    inverse = aug[0:len(M),len(M):]
+    return inverse
+    # np.savetxt('out.txt', inverse)
 
-print(pd.DataFrame(T))
-GaussJordan(T)
 
 
-Tinverse = np.array([[1.40, -0.86, 0.19, 0, 0, 0],
-     [-0.86, 2.24, -1.22, 0, 0, 0],
-     [0.19, -1.22, 1.74, 0, 0, 0],
-     [0, 0, 0, -34.71, 3.91, 32.09],
-     [0, 0, 0, 3.91, -1.77, -2.95],
-     [0, 0, 0, 32.09, -2.95, -31.00]], dtype=object)
+# T[0][0]+= T[0][0]-1
+# print(pd.DataFrame(T))
+Tinverse = GaussJordan(T)
 
+print(pd.DataFrame(Tinverse))
 
 
 
 #%%------- Question 5 c) ------- 
 
 
-Tinverse = np.array([[1.40, -0.86, 0.19, 0, 0, 0],
-     [-0.86, 2.24, -1.22, 0, 0, 0],
-     [0.19, -1.22, 1.74, 0, 0, 0],
-     [0, 0, 0, -34.71, 3.91, 32.09],
-     [0, 0, 0, 3.91, -1.77, -2.95],
-     [0, 0, 0, 32.09, -2.95, -31.00]], dtype=object)
+# Tinverse = np.array([[1.40, -0.86, 0.19, 0, 0, 0],
+#      [-0.86, 2.24, -1.22, 0, 0, 0],
+#      [0.19, -1.22, 1.74, 0, 0, 0],
+#      [0, 0, 0, -34.71, 3.91, 32.09],
+#      [0, 0, 0, 3.91, -1.77, -2.95],
+#      [0, 0, 0, 32.09, -2.95, -31.00]], dtype=object)
+
+Tinverse = GaussJordan(T)
 
 HER = pd.read_csv('Data/HER_data')
 HBK = pd.read_csv('Data/HBK_data')
