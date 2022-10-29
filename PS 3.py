@@ -163,7 +163,10 @@ x = Gauss(A, b)
 
 print(pd.DataFrame(x))
 
+#%%
 
+x = 5%2
+print(x)
 
 
 
@@ -193,6 +196,36 @@ def Trapezium(f, x):
     print('The area of this function is: %0.4f, found using %i trapeziums and a stepsize of %0.4f' % ((out[0]), n-1, h))
     return out
 
+
+def Simpson(f, x):
+    xupper = x[-1:]
+    xlower = x[0]
+    n = len(f)
+    rang = xupper - xlower
+    h = rang / n
+    temp = 0
+    
+    for i in range(0, n):
+        if np.isnan(f[i]) == True:
+            continue
+        if i==0 or i==(n-1):
+            temp += (f[i])
+        elif i%2 == 0:
+            temp += 2*f[i]
+        else:
+            temp += 4 * f[i]
+    out = (h/3) * temp
+    print('The area of this function is: %0.4f, found using %i polynomals and a stepsize of %0.4f' % ((out[0]), n-1, h))
+    return out
+
+
+
+
+
+
+
+
+
 def Gaussian(x, σ, μ):
     return (1 / (σ * np.sqrt(2 * np.pi)) * np.exp(-0.5 * ((x - μ)/σ)**2))
 
@@ -210,10 +243,11 @@ plt.scatter(x, y)
 def SineFunc(x):
     return (np.sin(x**2) / x)
 
-x = np.linspace(0, 10, 1000000)
+x = np.linspace(0, 10, 30)
 y = SineFunc(x)
 
 Trapezium(y, x)
+Simpson(y, x)
 
 
 #%% ------- QUESTION 6 a) --------
