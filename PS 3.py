@@ -9,12 +9,125 @@ Created on Wed Oct 26 08:59:53 2022
 # ------- PROBLEM SHEET 3 --------
 
 
-# ------- QUESTION 6 a) --------
-
 import matplotlib.pyplot as plt
 import numpy as np
 import math
 import pandas as pd
+
+
+#%% ------- QUESTION 1 --------
+
+%matplotlib inline
+
+# Define Gaussain function
+
+def Gaussian(x, σ, μ):
+    out = 1 / (σ * np.sqrt(2 * np.pi)) * np.exp(-0.5 * ((x - μ)/σ)**2)
+    return out
+
+# Plot Gaussian
+
+x = np.linspace(-4, 4, 4)
+
+plt.scatter(x, Gaussian(x, 1, 0))
+
+
+# Create Lagrange Polynomial function
+
+def Lagrange(n, x, f):
+    P = []
+    for k in range(0, n):
+        m=k
+        Pn = 0
+        for i in range(m):
+            
+            temp = f[i]
+            for j in range(m):
+                if j != i:
+                    temp = temp * ((x - x[j]) / (x[i] - x[j]))
+            Pn +=(temp)
+            
+        P.append(Pn)
+        
+    print(P)
+    return P
+
+
+def Poly(P, x):
+    lis = []
+    for j in range(len(x)):
+        out = 0
+        for i in range(len(P)):
+            out += (P[i] * x[j]**i)
+            print(out)
+        lis.append(out)
+    return lis
+
+
+
+
+P = Lagrange(4, x, Gaussian(x, 1, 0))
+
+x_new = np.linspace(-4, 4, 100)
+
+lagran = Poly(P, x_new)
+print('START')
+print(lagran)
+
+plt.plot(x_new, lagran)
+
+# plt.plot(x, Pn)
+
+
+
+
+
+
+# find P0:
+#     P = []
+#     for k in range(0, n):
+#         m=n
+#         Pn = 0
+#         while m>=0:
+#             for i in range(0, m):
+#                 inner=1
+#                 for j in range(0, m):
+#                     compute fraction
+#                     inner * fraction
+#                 temp = inner * f[n]
+#                 Pn +=(temp)
+#                 m -= 1
+    
+    
+    
+
+
+
+
+
+
+
+
+#%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#%% ------- QUESTION 6 a) --------
+
 
 %matplotlib inline
 
