@@ -108,7 +108,60 @@ plt.plot(x_new, lagran)
 
 
 
-#%%
+#%% --------- QUESTION 4 ------------
+
+# GAUSS ELIMINATION
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import matplotlib
+import sys
+
+%matplotlib auto
+
+np.set_printoptions(threshold=sys.maxsize)
+
+#%%------- Question 5 b) ------- 
+
+
+T = ([[1, 0.526, 0.257, 0, 0, 0],
+     [0.526, 1, 0.64, 0, 0, 0],
+     [0.257, 0.64, 1, 0, 0, 0],
+     [0, 0, 0, -1, -0.581, -0.978],
+     [0, 0, 0, -0.581, -1, -0.5],
+     [0, 0, 0, -0.978, -0.5, -1]])
+
+
+# Perform Gauss elimination to find inverse x
+# Apply matrix manipulation to A * x = b until you get x = M * b
+
+
+def Gauss(A, b):
+    aug = np.concatenate((A,b), axis=1)
+    for k in range(len(A)):
+        for i  in range(len(A)):
+            if k!=i:
+                ratio = aug[i][k] / aug[k][k]
+                for j in range(len(aug[0])):
+                    aug[i][j] -= (ratio * aug[k][j])
+        aug[k] = aug[k] / aug[k][k]
+    inverse = aug[:, len(A):]
+    return inverse
+    # np.savetxt('out.txt', inverse)
+
+
+A = [[1, 1, 1, 1],
+     [2, 1, -1, -2],
+     [2, 0.5, 0.5, 2],
+     [4/3, 1/6, -1/6, -4/3]]
+
+b = [[0], [1], [0], [0]]
+
+x = Gauss(A, b)
+
+print(pd.DataFrame(x))
 
 
 
@@ -116,14 +169,51 @@ plt.plot(x_new, lagran)
 
 
 
+#%% ------- QUESTION 5 a) --------
+
+%matplotlib inline
+np.seterr(divide='ignore', invalid='ignore')
+
+def Trapezium(f, x):
+    xupper = x[-1:]
+    xlower = x[0]
+    n = len(f)
+    rang = xupper - xlower
+    h = rang / n
+    temp = 0
+    
+    for i in range(0, n):
+        if np.isnan(f[i]) == True:
+            continue
+        if i==0 or i==(n-1):
+            temp += (0.5 * f[i])
+        else:
+            temp += f[i]
+    out = h * temp
+    print('The area of this function is: %0.4f, found using %i trapeziums and a stepsize of %0.4f' % ((out[0]), n-1, h))
+    return out
+
+def Gaussian(x, σ, μ):
+    return (1 / (σ * np.sqrt(2 * np.pi)) * np.exp(-0.5 * ((x - μ)/σ)**2))
+
+
+# Find area of Gaussian
+
+x = np.linspace(-4, 4, 500)
+y = Gaussian(x, 1, 0)
+plt.scatter(x, y)
+#area = Trapezium(y, x)
 
 
 
 
+def SineFunc(x):
+    return (np.sin(x**2) / x)
 
+x = np.linspace(0, 10, 1000000)
+y = SineFunc(x)
 
-
-
+Trapezium(y, x)
 
 
 #%% ------- QUESTION 6 a) --------
