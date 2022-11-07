@@ -16,6 +16,115 @@ import sys
 
 np.set_printoptions(threshold=sys.maxsize)
 
+
+
+#%%------- Question 1 ------- 
+
+# Split matrix A into lower triangular L and upper triangular U
+# A*x = L*U*x = L*y = b with U*x = y
+# Choose Lii = 1
+
+def LU_Decomp(A):
+    
+    # Initialise L and U matrices:
+    
+    L = np.zeros([len(A), len(A)])
+    U = np.zeros([len(A), len(A)])
+    
+    for i in range(len(A)):
+        L[i][i] = 1
+    
+    # Perform decomposition:
+    
+    for i in range(len(A)):
+        for j in range(len(A)):
+            sumu = 0
+            suml = 0
+            
+            if i<=j:
+                for k in range(i):
+                    sumu += (L[i][k] * U[k][j])
+                U[i][j] = A[i][j] - sumu
+            
+            if i>=j:
+                for l in range(j):
+                    suml += (L[i][l] * U[l][j])
+                L[i][j] = (1/U[j][j]) * (A[i][j] - suml)
+            
+    print(pd.DataFrame(L))
+    print('')
+    print(pd.DataFrame(U))
+    return pd.DataFrame(L), pd.DataFrame(U)
+
+
+
+A = [[5, 4, 3, 2, 1],
+     [4, 8, 6, 4, 2],
+     [3, 6, 9, 6, 3],
+     [2, 4, 6, 8, 4],
+     [1, 2, 3, 4, 5]]
+
+b = [[0],
+     [1],
+     [2],
+     [3],
+     [4]]
+
+
+L, U = (LU_Decomp(A))
+
+
+def Forward_Sub(L, b):
+    
+    # Initialise y:
+    
+    y = np.zeros([len(L[0]), len(b[0])])
+    
+    y[0] = b[0] / L[0][0]
+    
+    for i in range(1, len(L)):
+        summ = 0
+        for j in range(0, i):
+            summ += L[j][i] * y[j]
+        print(summ)
+        y[i] = (b[i] - summ) / L[i][i]
+        
+    print(pd.DataFrame(y))
+    return pd.DataFrame(y)
+        
+    
+
+y = Forward_Sub(L, b)
+
+
+
+
+def Backward_Sub(U, b):
+    
+    # Initialise x:
+    
+    x = np.zeros([len(U[0]), len(b[0])])
+    
+    N = len(b)
+    
+    x[N-1] = b[N-1] / U[N-1][N-1]
+    # print(x[0])
+    
+    
+    
+    for i in range(0, N):
+        summ = 0
+        for j in range(i+1, N-1):
+            summ += U[j][i] * x[j][0]
+        # print(summ-b[i][0])
+        # print(U[i][i])
+        x[i] = int(b[i][0] - summ) / U[i][i]
+        
+    print(pd.DataFrame(x))
+    return pd.DataFrame(x)
+
+x = Backward_Sub(U, b)
+
 #%%------- Question 5 b) ------- 
 
 
