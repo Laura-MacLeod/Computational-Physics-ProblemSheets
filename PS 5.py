@@ -16,6 +16,155 @@ import pandas as pd
 import scipy as sp
 
 
+#%% ------- QUESTION 2 a) --------
+
+
+def EulerHarmonic(tlower, tupper, N, u0, v0):
+    
+    t = np.linspace(tlower, tupper, N)
+    trange = tupper - tlower
+    Δt = trange / N
+    
+    u = [u0]
+    v = [v0]
+    energy = [u0**2 + v0**2]
+    
+    un = u0
+    vn = v0
+    
+    for i in range(N-1):
+        un1 = un + vn * Δt
+        vn1 = vn - un * Δt
+        
+        u.append(un1)
+        v.append(vn1)
+    
+        e = un1**2 + vn1**2
+        energy.append(e)
+        
+        un = un1
+        vn = vn1
+    
+    plt.figure(1)
+    plt.plot(t, u, label='Numeric')
+    plt.xlabel('t')
+    plt.ylabel('u')
+    
+    plt.figure(2)
+    plt.plot(t, energy)
+    plt.xlabel('t')
+    plt.ylabel('energy')
+    plt.ylim(0, 2)
+    
+    # plt.figure(3)
+    # plt.plot(t, v)
+    # plt.xlabel('t')
+    # plt.ylabel('v')
+    
+    
+    return t, u, energy
+
+
+def HarmonicOscillator(tlower, tupper, N):
+    t = np.linspace(tlower, tupper, N)
+    plt.figure(1)
+    plt.plot(t, np.sin(t), label='Analytic')
+    plt.legend()
+    return np.sin(t)
+
+
+EulerHarmonic(0, 1, 10, 0, 1)
+HarmonicOscillator(0, 1, 100)
+
+'''
+Needs minimum of 2 points to run. The fewer the number of points / larger the step size, the worse
+the approximation.
+'''
+
+
+#%% ------- QUESTION 2 b) --------
+
+
+
+
+
+def Iteration(tlower, tupper, N, un, vn, uguess, vguess):
+
+    un1 = uguess
+    vn1 = vguess
+    
+    t = np.linspace(tlower, tupper, N)
+    trange = tupper - tlower
+    Δt = trange / N
+    
+    for i in range(10000):
+        # while abs(s-temp) < 0.0000000000000000001:
+            tempu = un1
+            tempv = vn1
+            un1 = un + Δt * (vn + Δt * un1)
+            vn1 = vn + Δt * (un + Δt * vn1)
+            # print(s)
+            if abs(un1-tempu) < 1e-10 and abs(vn1-tempv) < 1e-10:
+                print(un1, vn1)
+                return un1, vn1
+                break
+
+Iteration(0, 1, 100, 0, 1, 0.1, 0.9)
+
+
+
+def EulerHarmonicImplicit(tlower, tupper, N, u0, v0, uguess, vguess):
+    
+    t = np.linspace(tlower, tupper, N)
+    trange = tupper - tlower
+    Δt = trange / N
+    
+    u = [u0]
+    v = [v0]
+    energy = [u0**2 + v0**2]
+    
+    un = u0
+    vn = v0
+    
+    for i in range(N-1):
+        un1, vn1 = Iteration(tlower, tupper, N, un, vn, uguess, vguess)
+        
+        u.append(un1)
+        v.append(vn1)
+    
+        e = un1**2 + vn1**2
+        energy.append(e)
+        
+        un = un1
+        vn = vn1
+    
+    plt.figure(1)
+    plt.plot(t, u, label='Numeric')
+    plt.xlabel('t')
+    plt.ylabel('u')
+    
+    plt.figure(2)
+    plt.plot(t, energy)
+    plt.xlabel('t')
+    plt.ylabel('energy')
+    plt.ylim(0, 2)
+    
+    # plt.figure(3)
+    # plt.plot(t, v)
+    # plt.xlabel('t')
+    # plt.ylabel('v')
+    
+    
+    return t, u, energy
+
+
+EulerHarmonicImplicit(0, 1, 100, 0, 1, 0.1, 0.9)
+HarmonicOscillator(0, 1, 100)
+
+
+
+
+
 #%% ------- QUESTION 3 a) --------
 
 %matplotlib inline
@@ -297,6 +446,35 @@ def Bisection(vlguess, vrguess, function, tlower, tupper, N, x0, x1, precision):
     
     
 Bisection(-100, 100, EulerBVP, 0, 1, 100, 0, 1/2, 0.001)
+
+
+
+
+
+
+
+
+#%% ------- QUESTION 3 b) --------
+
+'''
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
