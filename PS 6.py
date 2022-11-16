@@ -133,29 +133,65 @@ and Neumann BC.
 
 #%% ------- QUESTION 5 b) (i) --------
 
+%matplotlib auto
 
-time, ρ, T, vx, by, bz = pd.read_csv('Wind_Data.csv')
+# time, ρ, T, vx, by, bz = pd.read_csv('Wind_Data.csv', skiprows=1)
+columns = ['time', 'rho', 'T', 'vx', 'by', 'bz']
+vals = pd.read_csv('Wind_Data.csv', encoding="ascii", usecols=columns)
 
+time = vals['time']
+ρ = vals['rho']
+T = vals['T']
+vx = vals['vx']
+by = vals['by']
+bz = vals['bz']
+
+
+t = np.linspace(0, 1, 150)
 R_L1 = 1.6e6 # [km]
 
+time = list(time)
+# print(time.index(60))
 
 
 def Linear_Interpolate(x, xi, yi):
     y = []
-    
-    for i in range(len(x)):
+    x = list(x)
+
+    for i in range(0, len(x)):
         
-        upper_diffs = np.array(xi) - x[i]
-        upper_diffs[upper_diffs >=0]
-        xiplus1 = min(upper_diffs)
-        xindex = xi.index(xiplus1)
-        yiplus1 = yi[xindex]
+        upper_diffs = []
+        upper_xs = []
+        upper_ys = []
+        for j in range(len(xi)):
+            val = xi[j] - x[i]
+            if val >= 0:
+                upper_diffs.append(val)
+                upper_xs.append(xi[j])
+                upper_ys.append(yi[j])
         
-        lower_diffs = x[i] - np.array(xi)
-        lower_diffs[lower_diffs >=0]
-        xiplus0 = min(lower_diffs)
-        x0index = xi.index(xiplus0)
-        yiplus0 = yi[x0index]
+        min_diff = min(upper_diffs)
+        x1index = upper_diffs.index(min_diff)
+        xiplus1 = upper_xs[x1index]
+        yiplus1 = upper_ys[x1index]
+        
+        
+        lower_diffs = []
+        lower_xs = []
+        lower_ys = []
+        for j in range(len(xi)):
+            val = x[i] - xi[j]
+            # print(val)
+            if val >= 0:
+                lower_diffs.append(val)
+                lower_xs.append(xi[j])
+                lower_ys.append(yi[j])
+        
+        min_diff = min(lower_diffs)
+        x0index = lower_diffs.index(min_diff)
+        xiplus0 = lower_xs[x0index]
+        yiplus0 = lower_ys[x0index]
+   
         
         val = ((xiplus1 - x[i])*yiplus0 + (x[i] - xiplus0)*yiplus1) / (xiplus1 - xiplus0)
             
@@ -167,8 +203,44 @@ def Linear_Interpolate(x, xi, yi):
 
 
 
-lis = [4, 3, 2, 1, 0, -1, -2]
-print(min(lis))
+t = np.linspace(0, time[-1], 1000)
+x = np.linspace(-R_L1, 0, 1441)
+
+f = Linear_Interpolate(t, time, ρ)
+# print(f)
+
+plt.figure(1)
+plt.plot(x, ρ)
+
+# interpolated_ρ = Linear_Interpolate(t, time, ρ)
+
+# plt.plot(t, interpolated_ρ, color='orange')
+
+
+
+
+# x1 = [0, 3, 4, 4.5, 7, 8, 10]
+
+# y1 = [2, 3, 5, 4, 7, 3, 5]
+
+# plt.figure(2)
+# plt.plot(x1, y1, 'o', ls='-')
+
+# x2 = np.linspace(0, 10, 250)
+
+# y2 = Linear_Interpolate(x2, x1, y1)
+
+# plt.plot(x2, y2)
+
+
+
+initial_rho = []
+left_rho = 0.5 * (1 + np.sin(2*np.pi*t))
+right_dpdx = np.zeros(len(t))
+
+Advection(0, time[-1], 1000, -R_L1, 0, 100, initial_rho, left_rho, right_dpdx)
+
+
 
 
 
