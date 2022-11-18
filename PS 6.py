@@ -53,8 +53,9 @@ for i in range(len(t)):
     plt.figure(i)
     plt.plot(x[:-1], rho[i+1])
     plt.xlabel('x')
-    num = i/100
-    plt.ylabel('time %0.2d' % num)
+    plt.ylabel('rho')
+    # num = i/100
+    # plt.title('time', i)
 
 
 '''
@@ -73,7 +74,9 @@ Final state is perfect sinusoid.
 
 %matplotlib inline
 
-def Advection(t0, tn, tN, x0, xn, xN, initial_rho, left_rho, right_dpdx):
+t = np.linspace(0, 1, 150)
+
+def Advection(t0, tn, tN, x0, xn, xN, initial_rho, left_rho, right_dpdx, v):
     
     x = np.linspace(x0, xn, xN)
     t = np.linspace(t0, tn, tN)
@@ -83,7 +86,6 @@ def Advection(t0, tn, tN, x0, xn, xN, initial_rho, left_rho, right_dpdx):
     
     Δt = t[1] - t[0]
     h = x[1] - x[0]
-    v = 1
     
     a = Δt * v / h
     
@@ -111,18 +113,22 @@ def Advection(t0, tn, tN, x0, xn, xN, initial_rho, left_rho, right_dpdx):
         neumann_bc = pin + Δt * v * dpdx1[i]    # Add right-hand BC
         rho[i+1].append(neumann_bc)
         
-        plt.figure(i)
-        plt.plot(x, rho[i+1])
-        plt.xlabel('x')
-        num = i/100
-        plt.ylabel('time %0.2d' % num)
+        if i%10 == 0:
+            # print(x)
+            # print(rho[i+1])
+            plt.figure(i)
+            plt.plot(x, rho[i+1])
+            plt.xlabel('x')
+            num = i/100
+            plt.ylabel('rho')
 
 
-initial_rho = np.zeros(len(x))
-left_rho = 0.5 * (1 + np.sin(2*np.pi*t))
+# initial_rho = np.zeros(len(x))
+initial_rho = np.full(len(x), 1)
+left_rho = 0.5 * (1 - np.sin(2*np.pi*t))
 right_dpdx = np.zeros(len(t))
 
-Advection(0, 1, 150, 0, 1, 100, initial_rho, left_rho, right_dpdx)
+# Advection(0, 1, 150, 0, 1, 100, initial_rho, left_rho, right_dpdx, 1)
 
 
 '''
@@ -133,7 +139,7 @@ and Neumann BC.
 
 #%% ------- QUESTION 5 b) (i) --------
 
-%matplotlib auto
+%matplotlib inline
 
 # time, ρ, T, vx, by, bz = pd.read_csv('Wind_Data.csv', skiprows=1)
 columns = ['time', 'rho', 'T', 'vx', 'by', 'bz']
@@ -146,9 +152,11 @@ vx = vals['vx']
 by = vals['by']
 bz = vals['bz']
 
+print(ρ)
 
 t = np.linspace(0, 1, 150)
 R_L1 = 1.6e6 # [km]
+v = np.mean(vx)
 
 time = list(time)
 # print(time.index(60))
@@ -201,20 +209,21 @@ def Linear_Interpolate(x, xi, yi):
 
 
 
+# print(time[-1])
 
+t = np.linspace(0, time[-1], 10000)
+# print(t)
+x = np.linspace(-R_L1, 0, 10000)
 
-t = np.linspace(0, time[-1], 1000)
-x = np.linspace(-R_L1, 0, 1441)
-
-f = Linear_Interpolate(t, time, ρ)
+# f = Linear_Interpolate(t, time, ρ)
 # print(f)
 
 plt.figure(1)
-plt.plot(x, ρ)
+# plt.plot(x, ρ)
 
-# interpolated_ρ = Linear_Interpolate(t, time, ρ)
+interpolated_ρ = Linear_Interpolate(t, time, ρ)
 
-# plt.plot(t, interpolated_ρ, color='orange')
+plt.plot(x, interpolated_ρ, color='orange')
 
 
 
@@ -232,17 +241,23 @@ plt.plot(x, ρ)
 
 # plt.plot(x2, y2)
 
+# print(interpolated_ρ)
 
+initial_rho = np.full(len(x), interpolated_ρ[1])
 
-initial_rho = []
-left_rho = 0.5 * (1 + np.sin(2*np.pi*t))
+# for i in range(len())
+
+# left_rho = 0.5 * (1 + np.sin(2*np.pi*t))
+left_rho = interpolated_ρ
 right_dpdx = np.zeros(len(t))
 
-Advection(0, time[-1], 1000, -R_L1, 0, 100, initial_rho, left_rho, right_dpdx)
+Advection(0, time[-1], 10000, -R_L1, 0, 10000, initial_rho, left_rho, right_dpdx, v)
 
 
+#%%
 
 
+print(interpolated_ρ)
 
 
 
