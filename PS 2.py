@@ -125,6 +125,200 @@ def Backward_Sub(U, b):
 
 x = Backward_Sub(U, b)
 
+
+#%% --------- Question 2 ----------
+
+'''
+
+Eigenvalues of a matrix using method of powers
+
+Not currently giving the current answer, but code runs.
+Try alternative method with n+1?
+
+'''
+
+
+def Dot(m1, m2):
+    out = np.zeros((len(m1), len(m2[0])))
+    for n in range(len(m1[0])): #2
+        for j in range(len(m2)): #2
+            for m in range(len(m1)): #2
+                for i in range(len(m2[0])): # 1
+                    if n==j:
+                        out[m][i] += m1[m][n] * m2[j][i]
+    # print(out)
+    return out
+
+
+def Eigenvalue(A, v, n):
+    
+    A1 = A
+    A2 = A
+    
+    for i in range(n):
+        An = Dot(A1, A2)
+        A2 = An
+        
+    A = An
+    
+    print(Dot(A, v))
+    # print(np.linalg.det(Dot(A, v)))
+    
+    omega = (Dot(A, v)) / (np.linalg.norm(Dot(A, v)))
+    
+    print(A1)
+    
+    temp1 = Dot(np.transpose(omega), A1)
+    temp2 = Dot(A1, omega)
+
+    out = Dot(temp1, temp2)
+    
+    return out
+    
+    
+G = [[0, -1/3, 0, 0, 0],
+     [-1/3, 0, -1/3, 0, 0],
+     [0, -1/3, 0, -1/3, 0],
+     [0, 0, -1/3, 0, -1/3],
+     [0, 0, 0, -1/3, 0]]
+
+v = [[1],
+     [1],
+     [1],
+     [1],
+     [1]]
+
+
+lamb = Eigenvalue(G, v, 100)
+
+print(lamb)
+# print(max(lamb))
+
+
+
+
+
+
+#%% --------- Question 3 ----------
+
+'''
+
+Iterative Jacobi Method
+
+'''
+
+def Jacobi(A, b, x_initial, n):
+    
+    D = np.zeros([len(A), len(A)])
+    L = np.zeros([len(A), len(A)])
+    U = np.zeros([len(A), len(A)])
+    
+
+    for i in range(len(A)):
+        for j in range(len(A)):
+            if i>j:
+                L[i][j] = A[i][j]
+            if i<j:
+                U[i][j] = A[i][j]
+            if i==j:
+                D[i][j] = A[i][j]
+    
+    Dinverse = D / (2*D[1][1])
+    
+    upperlower = L + D
+    
+    x = x_initial
+    
+    for i in range(n):
+        x_new = Dot(Dinverse, b) - Dot(Dinverse, Dot(upperlower, x))
+        x = x_new
+        
+    
+        
+    return x
+    
+
+A = [[2, -1, 0, 0, 0],
+     [-1, 2, -1, 0, 0],
+     [0, -1, 2, -1, 0],
+     [0, 0, -1, 2, -1],
+     [0, 0, 0, -1, 2]]
+
+b = [[-1],
+     [0],
+     [0],
+     [0],
+     [5]]
+
+    
+x = Jacobi(A, b, b, 10000)
+
+print(x)
+
+
+
+#%%
+
+
+
+
+
+
+import numpy as np
+
+ITERATION_LIMIT = 1000
+
+# initialize the matrix
+A = np.array([[10., -1., 2., 0.],
+              [-1., 11., -1., 3.],
+              [2., -1., 10., -1.],
+              [0.0, 3., -1., 8.]])
+# initialize the RHS vector
+b = np.array([6., 25., -11., 15.])
+
+# prints the system
+print("System:")
+for i in range(A.shape[0]):
+    row = ["{}*x{}".format(A[i, j], j + 1) for j in range(A.shape[1])]
+    print(f'{" + ".join(row)} = {b[i]}')
+print()
+
+x = np.zeros_like(b)
+for it_count in range(ITERATION_LIMIT):
+    if it_count != 0:
+        print("Iteration {0}: {1}".format(it_count, x))
+    x_new = np.zeros_like(x)
+
+    for i in range(A.shape[0]):
+        s1 = np.dot(A[i, :i], x[:i])
+        s2 = np.dot(A[i, i + 1:], x[i + 1:])
+        x_new[i] = (b[i] - s1 - s2) / A[i, i]
+        if x_new[i] == x_new[i-1]:
+          break
+
+    if np.allclose(x, x_new, atol=1e-10, rtol=0.):
+        break
+
+    x = x_new
+
+print("Solution: ")
+print(x)
+error = np.dot(A, x) - b
+print("Error:")
+print(error)
+
+
+
+x_new = Dot(Dinverse, b) - Dot(Dinverse, Dot(upperlower, x))
+
+
+
+
+
+
+
+
+
 #%%------- Question 5 b) ------- 
 
 
